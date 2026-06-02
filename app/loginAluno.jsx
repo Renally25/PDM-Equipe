@@ -1,5 +1,6 @@
 import { View, Image, Text, TextInput, TouchableOpacity } from "react-native";
 import styles from "./stylesLogin";
+import { router } from "expo-router";
 
 export default function Login() {
   return (
@@ -13,7 +14,7 @@ export default function Login() {
       <TextInput placeholder="suasenha" secureTextEntry style={styles.inputarea}/>
       <Text style={styles.textoOblivio}>Esqueceu a senha?</Text>
       <TouchableOpacity style={styles.button}>
-        <Text style={styles.textbutton}>Entrar</Text>
+        <Text style={styles.textbutton} onPress={() => {router.push("/bemvindo")}}>Entrar</Text>
       </TouchableOpacity>
       <Text style={styles.texto}>Primeiro acesso? Seus dados de login são enviados pela administração da academia.</Text>
     </View>
