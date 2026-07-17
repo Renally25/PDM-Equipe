@@ -1,34 +1,51 @@
-import { useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import styles from "./styles";
 import { router } from "expo-router";
+import {
+    Image,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+} from "react-native";
+import styles from "./styles";
 
-export default function Tela1() {
-  const [selectedId, setSelectedId] = useState(null);
-
-
+export default function Login() {
   return (
-    <View style={styles.container}>
-      <Image source={{ uri: "https://img.freepik.com/vetores-gratis/vetor-de-design-de-gradiente-colorido-de-passaro_343694-2506.jpg?semt=ais_hybrid&w=740&q=80" }} style={{ width: 200, height: 200 }} />
-      <Text style={styles.titulo}>Raggio Academia</Text>
-      <Text style={styles.subtitle}>Studio Clinfit</Text>
-      <TouchableOpacity style={[styles.butao, selectedId === 1
-      ? styles.activeButton
-      : styles.inactiveButton
-  ]}
-  onPress={() => {
-    setSelectedId(1)
-    router.push("/loginAluno")
-  }}>
-        <Text style={styles.textbutton}>Sou Aluno-Paciente</Text>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={true}
+    >
+      <Image
+        source={{
+          uri: "https://img.freepik.com/vetores-gratis/vetor-de-design-de-gradiente-colorido-de-passaro_343694-2506.jpg?semt=ais_hybrid&w=740&q=80",
+        }}
+        style={{ height: 200, width: 200 }}
+      />
+      <Text style={styles.titulo}>Entrar</Text>
+      <Text style={styles.subtitle}>Use os dados enviados pela academia</Text>
+      <Text style={styles.texto}>E-mail</Text>
+      <TextInput placeholder="aluno@gmail.com" style={styles.inputarea} />
+      <Text style={styles.texto}>Senha</Text>
+      <TextInput
+        placeholder="suasenha"
+        secureTextEntry
+        style={styles.inputarea}
+      />
+      <Text style={styles.textoOblivio}>Esqueceu a senha?</Text>
+      <TouchableOpacity style={styles.button}>
+        <Text
+          style={styles.textbutton}
+          onPress={() => {
+            router.push("/bemvindo");
+          }}
+        >
+          Entrar
+        </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.butao, selectedId === 2 ? styles.activeButton : styles.inactiveButton]} onPress={() => {
-    setSelectedId(2)
-    router.push("/loginProfissional")
-  }}>
-        <Text style={styles.textbutton}>Sou Profissional</Text>
-      </TouchableOpacity>
-      <Text style={styles.aviso}>Acesso Fornecido pela Raggio Academia</Text>
-    </View>
+      <Text style={styles.texto}>
+        Primeiro acesso? Seus dados de login são enviados pela administração da
+        academia.
+      </Text>
+    </ScrollView>
   );
 }

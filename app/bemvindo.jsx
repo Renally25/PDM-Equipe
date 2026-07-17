@@ -1,13 +1,17 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
-import styles from "./bemvindoStyles";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Feather from "@expo/vector-icons/Feather";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import styles from "./bemvindoStyles";
 
 export default function Bemvindo() {
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={true}
+    >
       <Image
         source={{
           uri: "https://img.freepik.com/vetores-gratis/vetor-de-design-de-gradiente-colorido-de-passaro_343694-2506.jpg?semt=ais_hybrid&w=740&q=80",
@@ -42,10 +46,15 @@ export default function Bemvindo() {
         <Text style={styles.minitext}>Estado emocional e saúde</Text>
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={() => {router.push("/config1")}}    >
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          router.push("/config1");
+        }}
+      >
         <Text style={styles.textButton}>Continuar</Text>
         <AntDesign name="arrow-right" size={24} color="white" />
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }

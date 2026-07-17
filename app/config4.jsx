@@ -1,0 +1,165 @@
+import AntDesign from "@expo/vector-icons/AntDesign";
+import { router } from "expo-router";
+import { useState } from "react";
+import {
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from "react-native";
+import styles from "./configPerfilStyles";
+
+export default function Config4() {
+  const [dificuldadesEmocionais, setDificuldadesEmocionais] = useState(null);
+  const [dificuldadesEmocionaisDetalhes, setDificuldadesEmocionaisDetalhes] =
+    useState("");
+  const [acompanhamentoPsico, setAcompachamentoPsico] = useState(null);
+  const [tempoAcompanhamento, setTempoAcompanhamento] = useState("");
+  const [possuiDisturbio, setPossuiDisturbio] = useState(null);
+  const [qualDisturbio, setQualDisturbio] = useState("");
+
+  return (
+    <View style={styles.container}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={true}
+      >
+        <View style={styles.etapasProcesso}>
+          <View style={styles.etapasPreenchido} />
+          <View style={styles.etapasPreenchido} />
+          <View style={styles.etapasPreenchido} />
+          <View style={styles.etapasPreenchido} />
+          <View style={styles.etapasVazio} />
+          <View style={styles.etapasVazio} />
+          <View style={styles.etapasVazio} />
+        </View>
+        <Text style={styles.titulo}>Avaliação psicológica</Text>
+        <View>
+          <View style={styles.containersSelecao}>
+            <Text style={styles.textoSelecao}>
+              Enfrenta dificuldades emocionais ou psicológicas?
+            </Text>
+            <View style={styles.containerSelecao}>
+              <TouchableOpacity
+                style={[
+                  styles.opcaoSelecao,
+                  dificuldadesEmocionais === "Sim" && styles.opcaoSelecionada,
+                ]}
+                onPress={() => setDificuldadesEmocionais("Sim")}
+              >
+                <Text style={styles.textoSelecao}>Sim</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.opcaoSelecao,
+                  dificuldadesEmocionais === "Não" && styles.opcaoSelecionada,
+                ]}
+                onPress={() => setDificuldadesEmocionais("Não")}
+              >
+                <Text style={styles.textoSelecao}>Não</Text>
+              </TouchableOpacity>
+            </View>
+            {dificuldadesEmocionais === "Sim" && (
+              <View style={styles.opcaoInputContainer}>
+                <TextInput
+                  style={styles.opcaoInput}
+                  placeholder="Descreva:"
+                  value={dificuldadesEmocionaisDetalhes}
+                  onChangeText={setDificuldadesEmocionaisDetalhes}
+                />
+              </View>
+            )}
+          </View>
+          <View style={styles.containersSelecao}>
+            <Text style={styles.textoSelecao}>
+              Realiza algum acompanhamento psicológico?
+            </Text>
+            <View style={styles.containerSelecao}>
+              <TouchableOpacity
+                style={[
+                  styles.opcaoSelecao,
+                  acompanhamentoPsico === "Sim" && styles.opcaoSelecionada,
+                ]}
+                onPress={() => setAcompachamentoPsico("Sim")}
+              >
+                <Text style={styles.textoSelecao}>Sim</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.opcaoSelecao,
+                  acompanhamentoPsico === "Não" && styles.opcaoSelecionada,
+                ]}
+                onPress={() => setAcompachamentoPsico("Não")}
+              >
+                <Text style={styles.textoSelecao}>Não</Text>
+              </TouchableOpacity>
+            </View>
+            {acompanhamentoPsico === "Sim" && (
+              <View style={styles.opcaoInputContainer}>
+                <TextInput
+                  style={styles.opcaoInput}
+                  placeholder="Há quanto tempo?"
+                  value={tempoAcompanhamento}
+                  onChangeText={setTempoAcompanhamento}
+                />
+              </View>
+            )}
+          </View>
+          <View style={styles.containersSelecao}>
+            <Text style={styles.textoSelecao}>
+              Possui algum transtorno emocional ou comportamental?
+            </Text>
+            <View style={styles.containerSelecao}>
+              <TouchableOpacity
+                style={[
+                  styles.opcaoSelecao,
+                  possuiDisturbio === "Sim" && styles.opcaoSelecionada,
+                ]}
+                onPress={() => setPossuiDisturbio("Sim")}
+              >
+                <Text style={styles.textoSelecao}>Sim</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.opcaoSelecao,
+                  possuiDisturbio === "Não" && styles.opcaoSelecionada,
+                ]}
+                onPress={() => setPossuiDisturbio("Não")}
+              >
+                <Text style={styles.textoSelecao}>Não</Text>
+              </TouchableOpacity>
+            </View>
+            {possuiDisturbio === "Sim" && (
+              <View style={styles.opcaoInputContainer}>
+                <TextInput
+                  style={styles.opcaoInput}
+                  placeholder="Qual/quais?"
+                  value={qualDisturbio}
+                  onChangeText={setQualDisturbio}
+                />
+              </View>
+            )}
+          </View>
+        </View>
+      </ScrollView>
+      <View style={styles.decisions}>
+        <TouchableOpacity
+          style={styles.buttonContinuar}
+          onPress={() => router.push("/config5")}
+        >
+          <Text style={styles.decisionsContinuar}>Continuar</Text>
+          <AntDesign name="arrow-right" size={20} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonVoltar}
+          onPress={() => router.back()}
+        >
+          <AntDesign name="arrow-left" size={20} color="#3B4231" />
+          <Text style={styles.decisionsVoltar}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}

@@ -1,46 +1,63 @@
 import { StyleSheet } from "react-native";
-   export default StyleSheet.create({
+
+export default StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: "#D5CDB8",
+  },
+  scrollContent: {
+    paddingVertical: 30,
+    alignItems: "center",
+    justifyContent: "center",
+    flexGrow: 1,
+  },
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#3B4231",
+    backgroundColor: "#D5CDB8",
   },
   titulo: {
-    fontSize: 33,
-    fontWeight: "bold",
-    margin: 10,
-    color: "#D5CDB8",
+    fontSize: 32,
+    color: "#656C47",
   },
   subtitle: {
     fontSize: 20,
+    color: "#847752",
     margin: 10,
-    color: "#BCAD88",
   },
-  butao:{
-    backgroundColor: '#D5CDB8',
-    padding: 15,
+  texto: {
+    fontSize: 18,
+    color: "#847752",
+    marginTop: 20,
+    alignSelf: "flex-start",
+    marginLeft: "10%",
+  },
+  textoOblivio: {
+    fontSize: 16,
+    color: "#847752",
+    opacity: 0.8,
+    marginTop: 5,
+    marginBottom: 15,
+  },
+  inputarea: {
+    width: "80%",
+    backgroundColor: "#3B4231",
+    color: "#fafafa",
+    borderWidth: 1,
+    borderRadius: 5,
+    padding: 10,
+    border: "none",
+  },
+  button: {
+    backgroundColor: "#656C47",
+    padding: 12,
     borderRadius: 20,
-    alignItems: 'center',
-    margin: 10
-  },
-  activeButton: {
-    backgroundColor: '#656C47',
-    borderColor: '#D5CDB8',
-    borderWidth: 2,
-    
-  },
-  inactiveButton: {
-    backgroundColor: '#D5CDB8',
+    paddingHorizontal: 50,
   },
   textbutton: {
-    color: '#3B4231',
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  aviso: {
+    color: "#D5CDB8",
     fontSize: 20,
-    margin: 10,
-    color: "#BCAD88",
-  }
+    fontWeight: "bold",
+  },
 });

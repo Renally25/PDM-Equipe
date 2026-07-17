@@ -1,9 +1,17 @@
-import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
-import styles from "./configPerfilStyles";
-import { router } from "expo-router";
-import * as ImagePicker from "expo-image-picker";
-import { useState } from "react";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import * as ImagePicker from "expo-image-picker";
+import { router } from "expo-router";
+import { useState } from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import styles from "./configPerfilStyles";
 
 export default function Config1() {
   const [image, setImage] = useState(null);
@@ -32,23 +40,44 @@ export default function Config1() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.titulo}>Foto de Perfil</Text>
-      <TouchableOpacity
-        onPressIn={pegarImagem}
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={true}
       >
-        {image ? (
-          <Image source={{ uri: image }} style={styles.avatar} />
-        ) : (
-          <FontAwesome name="user-circle-o" size={90} color="black" />
-        )}
-      </TouchableOpacity>
-      <Text style={styles.subtitulo}>Adicionar foto</Text>
-      <View style={styles.decisions}>
-        <TouchableOpacity style={styles.buttonContinuar}>
-            <Text>Continuar</Text>
+        <View style={styles.etapasProcesso}>
+          <View style={styles.etapasPreenchido} />
+          <View style={styles.etapasVazio} />
+          <View style={styles.etapasVazio} />
+          <View style={styles.etapasVazio} />
+          <View style={styles.etapasVazio} />
+          <View style={styles.etapasVazio} />
+          <View style={styles.etapasVazio} />
+        </View>
+        <Text style={styles.titulo}>Foto de Perfil</Text>
+        <TouchableOpacity onPressIn={pegarImagem}>
+          {image ? (
+            <Image source={{ uri: image }} style={styles.avatar} />
+          ) : (
+            <FontAwesome name="user-circle-o" size={90} color="black" />
+          )}
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonVoltar}>
-            <Text>Voltar</Text>
+        <Text style={styles.subtitulo}>Adicionar foto</Text>
+      </ScrollView>
+      <View style={styles.decisions}>
+        <TouchableOpacity
+          style={styles.buttonContinuar}
+          onPress={() => router.push("/config2")}
+        >
+          <Text style={styles.decisionsContinuar}>Continuar</Text>
+          <AntDesign name="arrow-right" size={20} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonVoltar}
+          onPress={() => router.back()}
+        >
+          <AntDesign name="arrow-left" size={20} color="#3B4231" />
+          <Text style={styles.decisionsVoltar}>Voltar</Text>
         </TouchableOpacity>
       </View>
     </View>
