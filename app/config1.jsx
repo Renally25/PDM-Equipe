@@ -4,17 +4,18 @@ import * as ImagePicker from "expo-image-picker";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    Image,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import styles from "./configPerfilStyles";
 
 export default function Config1() {
   const [image, setImage] = useState(null);
+  const canContinue = Boolean(image);
 
   const pegarImagem = async () => {
     const permissao = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -66,8 +67,21 @@ export default function Config1() {
       </ScrollView>
       <View style={styles.decisions}>
         <TouchableOpacity
-          style={styles.buttonContinuar}
-          onPress={() => router.push("/config2")}
+          style={[
+            styles.buttonContinuar,
+            !canContinue && styles.buttonDisabled,
+          ]}
+          disabled={!canContinue}
+          onPress={() => {
+            if (!canContinue) {
+              Alert.alert(
+                "Faltam dados",
+                "Adicione uma foto de perfil para continuar.",
+              );
+              return;
+            }
+            router.push("/config2");
+          }}
         >
           <Text style={styles.decisionsContinuar}>Continuar</Text>
           <AntDesign name="arrow-right" size={20} color="white" />

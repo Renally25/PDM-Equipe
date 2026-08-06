@@ -2,11 +2,12 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import styles from "./configPerfilStyles";
 
@@ -18,6 +19,16 @@ export default function Config4() {
   const [tempoAcompanhamento, setTempoAcompanhamento] = useState("");
   const [possuiDisturbio, setPossuiDisturbio] = useState(null);
   const [qualDisturbio, setQualDisturbio] = useState("");
+
+  const canContinue = Boolean(
+    dificuldadesEmocionais &&
+    acompanhamentoPsico &&
+    possuiDisturbio &&
+    (dificuldadesEmocionais === "Não" ||
+      dificuldadesEmocionaisDetalhes.trim()) &&
+    (acompanhamentoPsico === "Não" || tempoAcompanhamento.trim()) &&
+    (possuiDisturbio === "Não" || qualDisturbio.trim()),
+  );
 
   return (
     <View style={styles.container}>
@@ -36,7 +47,7 @@ export default function Config4() {
           <View style={styles.etapasVazio} />
         </View>
         <Text style={styles.titulo}>Avaliação psicológica</Text>
-        <View>
+        <View style={styles.formGrid}>
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>
               Enfrenta dificuldades emocionais ou psicológicas?
@@ -146,8 +157,21 @@ export default function Config4() {
       </ScrollView>
       <View style={styles.decisions}>
         <TouchableOpacity
-          style={styles.buttonContinuar}
-          onPress={() => router.push("/config5")}
+          style={[
+            styles.buttonContinuar,
+            !canContinue && styles.buttonDisabled,
+          ]}
+          disabled={!canContinue}
+          onPress={() => {
+            if (!canContinue) {
+              Alert.alert(
+                "Faltam dados",
+                "Responda todas as perguntas obrigatórias antes de continuar.",
+              );
+              return;
+            }
+            router.push("/config5");
+          }}
         >
           <Text style={styles.decisionsContinuar}>Continuar</Text>
           <AntDesign name="arrow-right" size={20} color="white" />

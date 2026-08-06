@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export const colors = {
-  background: "#DAD3C0",
+  background: "#D5CDB8",
   darkGreen: "#3C4A34",
   textDark: "#2B2B2B",
   textMuted: "#8C8C82",
@@ -13,7 +13,6 @@ export const colors = {
 export const styles = StyleSheet.create({
   quadro: {
     flex: 1,
-    padding: 6,
     overflow: "hidden",
   },
   areaSegura: {
@@ -113,9 +112,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     alignItems: "center",
     backgroundColor: colors.darkGreen,
-    paddingVertical: 16,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    paddingVertical: 16
   },
   wrapperIconeNavegacao: {
     padding: 6,

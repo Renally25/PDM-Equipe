@@ -13,9 +13,7 @@ export default function Bemvindo() {
       showsVerticalScrollIndicator={true}
     >
       <Image
-        source={{
-          uri: "https://img.freepik.com/vetores-gratis/vetor-de-design-de-gradiente-colorido-de-passaro_343694-2506.jpg?semt=ais_hybrid&w=740&q=80",
-        }}
+        source={require("../assets/images/Logo raggio-bege.png")}
         style={{ width: 200, height: 200 }}
       />
 

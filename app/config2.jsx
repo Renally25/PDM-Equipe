@@ -2,11 +2,12 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import styles from "./configPerfilStyles";
 
@@ -25,6 +26,23 @@ export default function Config2() {
   const [histLesaoDetalhes, setHistLesaoDetalhes] = useState("");
   const [restricaoMedica, setRestricaoMedica] = useState(null);
   const [restricaoMedicaDetalhes, setRestricaoMedicaDetalhes] = useState("");
+
+  const canContinue = Boolean(
+    peso.trim() &&
+    altura.trim() &&
+    disponibilidade &&
+    nivelAtividade &&
+    musculacao &&
+    doencasCronicas &&
+    medicamentos &&
+    histLesao &&
+    restricaoMedica &&
+    (musculacao === "Não" || tempoMusculacao.trim()) &&
+    (doencasCronicas === "Não" || doencasCronicasDetalhes.trim()) &&
+    (medicamentos === "Não" || medicamentosDetalhes.trim()) &&
+    (histLesao === "Não" || histLesaoDetalhes.trim()) &&
+    (restricaoMedica === "Não" || restricaoMedicaDetalhes.trim()),
+  );
 
   return (
     <View style={styles.container}>
@@ -63,7 +81,7 @@ export default function Config2() {
             />
           </View>
         </View>
-        <View>
+        <View style={styles.formGrid}>
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>
               Nível de atividade física atual
@@ -327,8 +345,21 @@ export default function Config2() {
       </ScrollView>
       <View style={styles.decisions}>
         <TouchableOpacity
-          style={styles.buttonContinuar}
-          onPress={() => router.push("/config3")}
+          style={[
+            styles.buttonContinuar,
+            !canContinue && styles.buttonDisabled,
+          ]}
+          disabled={!canContinue}
+          onPress={() => {
+            if (!canContinue) {
+              Alert.alert(
+                "Faltam dados",
+                "Preencha todos os campos obrigatórios antes de continuar.",
+              );
+              return;
+            }
+            router.push("/config3");
+          }}
         >
           <Text style={styles.decisionsContinuar}>Continuar</Text>
           <AntDesign name="arrow-right" size={20} color="white" />

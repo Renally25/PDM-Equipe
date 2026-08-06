@@ -2,11 +2,12 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import styles from "./configPerfilStyles";
 
@@ -23,6 +24,19 @@ export default function Config5() {
   const [qualDesvio, setQualDesvio] = useState("");
   const [limitForca, setLimitForca] = useState(null);
   const [qualLimit, setQualLimit] = useState("");
+
+  const canContinue = Boolean(
+    sofreuLesao &&
+    fezFisio &&
+    dorMusc &&
+    desvioPostural &&
+    limitForca &&
+    (sofreuLesao === "Não" || lesaoDetalhe.trim()) &&
+    (fezFisio === "Não" || motivoFisio.trim()) &&
+    (dorMusc === "Não" || dorMuscDetalhe.trim()) &&
+    (desvioPostural === "Não" || qualDesvio.trim()) &&
+    (limitForca === "Não" || qualLimit.trim()),
+  );
 
   return (
     <View style={styles.container}>
@@ -41,7 +55,7 @@ export default function Config5() {
           <View style={styles.etapasVazio} />
         </View>
         <Text style={styles.titulo}>Avaliação fisioterápica</Text>
-        <View>
+        <View style={styles.formGrid}>
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>
               Já sofreu lesão muscular, articular ou óssea durante exercícios?
@@ -221,8 +235,21 @@ export default function Config5() {
       </ScrollView>
       <View style={styles.decisions}>
         <TouchableOpacity
-          style={styles.buttonContinuar}
-          onPress={() => router.push("/config6")}
+          style={[
+            styles.buttonContinuar,
+            !canContinue && styles.buttonDisabled,
+          ]}
+          onPress={() => {
+            if (!canContinue) {
+              Alert.alert(
+                "Faltam dados",
+                "Responda todas as perguntas obrigatórias antes de continuar.",
+              );
+              return;
+            }
+            router.push("/config6");
+          }}
+          disabled={!canContinue}
         >
           <Text style={styles.decisionsContinuar}>Continuar</Text>
           <AntDesign name="arrow-right" size={20} color="white" />

@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import { router } from "expo-router";
 import { colors, styles } from "./homeScreenStyles";
 
 const user = {
@@ -20,7 +21,7 @@ const nextAppointment = {
 };
 
 const shortcuts = [
-  { key: "treinos", label: "Treinos", icon: "barbell-outline" },
+  { key: "treinosScreen", label: "Treinos", icon: "barbell-outline" },
   { key: "diarios", label: "Diários", icon: "pencil-outline" },
   { key: "consultas", label: "Consultas", icon: "calendar-outline" },
   { key: "fisioterapia", label: "Fisioterapia", icon: "location-outline" },
@@ -58,7 +59,8 @@ export default function HomeScreen() {
                 activeOpacity={0.7}
               >
                 <View style={styles.caixaIconeGrade}>
-                  <Ionicons name={item.icon} size={28} color={colors.white} />
+                  <Ionicons name={item.icon} size={28} color={colors.white} onPress={() => router.push(`/${item.key}`)}/>
+                  
                 </View>
                 <Text style={styles.rotuloGrade}>{item.label}</Text>
               </TouchableOpacity>
@@ -70,7 +72,10 @@ export default function HomeScreen() {
           <TouchableOpacity style={styles.wrapperIconeNavegacao}>
             <Ionicons name="home-outline" size={26} color={colors.white} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.wrapperIconeNavegacao}>
+          <TouchableOpacity
+            style={styles.wrapperIconeNavegacao}
+            onPress={() => router.push("/PerfilScreen")}
+          >
             <Ionicons name="person-outline" size={26} color={colors.white} />
           </TouchableOpacity>
         </View>

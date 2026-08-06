@@ -2,11 +2,12 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import styles from "./configPerfilStyles";
 
@@ -33,7 +34,7 @@ export default function Config6() {
           <View style={styles.etapasVazio} />
         </View>
         <Text style={styles.titulo}>Objetivos e expectativas</Text>
-        <View>
+        <View style={styles.formGrid}>
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>Objetivos com a musculação</Text>
             <View style={styles.opcaoInputContainer}>
@@ -51,10 +52,13 @@ export default function Config6() {
             </Text>
             <View style={styles.opcaoInputContainer}>
               <TextInput
-                style={styles.opcaoInput}
+                style={[styles.opcaoInput, styles.opcaoInputMultiline]}
                 placeholder="Quais são suas expectativas com a musculação?"
                 value={expectativas}
                 onChangeText={setExpectativas}
+                multiline
+                numberOfLines={3}
+                textAlignVertical="top"
               />
             </View>
           </View>
@@ -66,16 +70,23 @@ export default function Config6() {
             styles.buttonContinuar,
             !canContinue && styles.buttonDisabled,
           ]}
-          onPress={() =>
+          onPress={() => {
+            if (!canContinue) {
+              Alert.alert(
+                "Faltam dados",
+                "Preencha os objetivos e as expectativas para continuar.",
+              );
+              return;
+            }
             router.push(
               `/configTermo?objetivos=${encodeURIComponent(objetivos ?? "")}&expectativas=${encodeURIComponent(
                 expectativas ?? "",
               )}`,
-            )
-          }
+            );
+          }}
           disabled={!canContinue}
         >
-          <Text style={styles.decisionsContinuar}>Confirmar informações</Text>
+          <Text style={styles.decisionsContinuar}>Continuar</Text>
           <AntDesign name="arrow-right" size={20} color="white" />
         </TouchableOpacity>
         <TouchableOpacity

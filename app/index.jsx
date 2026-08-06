@@ -1,10 +1,10 @@
 import { router } from "expo-router";
 import {
-    Image,
-    ScrollView,
-    Text,
-    TextInput,
-    TouchableOpacity,
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
 } from "react-native";
 import styles from "./styles";
 
@@ -16,9 +16,7 @@ export default function Login() {
       showsVerticalScrollIndicator={true}
     >
       <Image
-        source={{
-          uri: "https://img.freepik.com/vetores-gratis/vetor-de-design-de-gradiente-colorido-de-passaro_343694-2506.jpg?semt=ais_hybrid&w=740&q=80",
-        }}
+        source={require("../assets/images/Logo raggio-bege.png")}
         style={{ height: 200, width: 200 }}
       />
       <Text style={styles.titulo}>Entrar</Text>
@@ -32,15 +30,13 @@ export default function Login() {
         style={styles.inputarea}
       />
       <Text style={styles.textoOblivio}>Esqueceu a senha?</Text>
-      <TouchableOpacity style={styles.button}>
-        <Text
-          style={styles.textbutton}
-          onPress={() => {
-            router.push("/bemvindo");
-          }}
-        >
-          Entrar
-        </Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          router.push("/bemvindo");
+        }}
+      >
+        <Text style={styles.textbutton}>Entrar</Text>
       </TouchableOpacity>
       <Text style={styles.texto}>
         Primeiro acesso? Seus dados de login são enviados pela administração da

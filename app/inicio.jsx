@@ -11,9 +11,7 @@ export default function Inicio() {
     >
       <View style={styles.container}>
         <Image
-          source={{
-            uri: "https://img.freepik.com/vetores-gratis/vetor-de-design-de-gradiente-colorido-de-passaro_343694-2506.jpg?semt=ais_hybrid&w=740&q=80",
-          }}
+          source={require("../assets/images/Logo Raggio.png")}
           style={styles.heroImage}
         />
         <Text style={styles.title}>Bem-vindo ao Raggio Studio</Text>

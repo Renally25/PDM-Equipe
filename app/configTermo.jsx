@@ -1,16 +1,22 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useState } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import styles from "./configPerfilStyles";
 
 export default function ConfigTermo() {
   const [isConfirmed, setIsConfirmed] = useState(false);
 
   const handleConfirm = () => {
-    if (isConfirmed) {
-      router.push("/inicio");
+    if (!isConfirmed) {
+      Alert.alert(
+        "Confirmação necessária",
+        "Marque a autorização para continuar.",
+      );
+      return;
     }
+
+    router.push("/inicio");
   };
 
   return (

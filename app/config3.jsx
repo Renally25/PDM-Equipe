@@ -2,6 +2,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
+    Alert,
     ScrollView,
     Text,
     TextInput,
@@ -20,6 +21,16 @@ export default function Config3() {
   const [disfuncAssoalhoPelviDetalhes, setDisfuncAssoalhoPelviDetalhes] =
     useState("");
 
+  const canContinue = Boolean(
+    contraceptivo &&
+    cicloMenstrual &&
+    sintomaTPM &&
+    disfuncAssoalhoPelvi &&
+    (contraceptivo === "Não" || contraceptivoDetalhes.trim()) &&
+    (sintomaTPM === "Não" || sintomaTPMDetalhes.trim()) &&
+    (disfuncAssoalhoPelvi === "Não" || disfuncAssoalhoPelviDetalhes.trim()),
+  );
+
   return (
     <View style={styles.container}>
       <ScrollView
@@ -37,7 +48,7 @@ export default function Config3() {
           <View style={styles.etapasVazio} />
         </View>
         <Text style={styles.titulo}>Saúde e Bem-estar da Mulher</Text>
-        <View>
+        <View style={styles.formGrid}>
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>
               Utiliza algum contraceptivo?
@@ -172,8 +183,21 @@ export default function Config3() {
       </ScrollView>
       <View style={styles.decisions}>
         <TouchableOpacity
-          style={styles.buttonContinuar}
-          onPress={() => router.push("/config4")}
+          style={[
+            styles.buttonContinuar,
+            !canContinue && styles.buttonDisabled,
+          ]}
+          disabled={!canContinue}
+          onPress={() => {
+            if (!canContinue) {
+              Alert.alert(
+                "Faltam dados",
+                "Responda todas as perguntas obrigatórias antes de continuar.",
+              );
+              return;
+            }
+            router.push("/config4");
+          }}
         >
           <Text style={styles.decisionsContinuar}>Continuar</Text>
           <AntDesign name="arrow-right" size={20} color="white" />
