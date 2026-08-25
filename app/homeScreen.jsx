@@ -24,7 +24,7 @@ const shortcuts = [
   { key: "treinosScreen", label: "Treinos", icon: "barbell-outline" },
   { key: "diarios", label: "Diários", icon: "pencil-outline" },
   { key: "consultas", label: "Consultas", icon: "calendar-outline" },
-  { key: "fisioterapia", label: "Fisioterapia", icon: "location-outline" },
+  { key: "fisioScreen", label: "Fisioterapia", icon: "location-outline" },
 ];
 
 export default function HomeScreen() {

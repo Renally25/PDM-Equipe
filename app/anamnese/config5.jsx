@@ -14,8 +14,6 @@ import styles from "./configPerfilStyles";
 export default function Config5() {
   const [sofreuLesao, setSofreuLesao] = useState(null);
   const [lesaoDetalhe, setLesaoDetalhe] = useState("");
-  const [lesaoMusc, setLesaoMusc] = useState(null);
-  const [lesaoMuscDetalhe, setLesaoMuscDetalhe] = useState("");
   const [fezFisio, setFezFisio] = useState(null);
   const [motivoFisio, setMotivoFisio] = useState("");
   const [dorMusc, setDorMusc] = useState(null);
@@ -247,7 +245,7 @@ export default function Config5() {
               );
               return;
             }
-            router.push("/config6");
+            router.push("./config6");
           }}
           disabled={!canContinue}
         >

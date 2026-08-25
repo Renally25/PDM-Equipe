@@ -13,8 +13,8 @@ export default function Bemvindo() {
       showsVerticalScrollIndicator={true}
     >
       <Image
-        source={require("../assets/images/Logo raggio-bege.png")}
-        style={{ width: 200, height: 200 }}
+        source={require("../assets/images/Logo Raggio.png")}
+        style={{ width: 200, height: 200 , borderRadius: 100}}
       />
 
       <Text style={styles.titulo}>Bem-vindo!</Text>
@@ -47,7 +47,7 @@ export default function Bemvindo() {
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
-          router.push("/config1");
+          router.push("/anamnese/config1");
         }}
       >
         <Text style={styles.textButton}>Continuar</Text>

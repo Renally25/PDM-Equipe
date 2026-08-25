@@ -13,8 +13,7 @@ export default StyleSheet.create({
     marginBottom: 20,
     color: "#3B4231",
     marginLeft: 25,
-    marginBottom: 20,
-    marginTop: 35,
+    marginTop: 5,
   },
   subtitulo: {
     fontSize: 40,
@@ -69,7 +68,7 @@ export default StyleSheet.create({
     marginBottom: 20,
     width: "80%",
     height: 10,
-    marginTop: 20,
+    marginTop: 55,
   },
   etapasPreenchido: {
     backgroundColor: "#3B4231",
@@ -230,9 +229,12 @@ export default StyleSheet.create({
     borderColor: "#3B4231",
   },
   captchaText: {
+    flex: 1,
+    flexShrink: 1,
     color: "#3B4231",
     fontSize: 15,
     fontWeight: "600",
+    lineHeight: 20,
   },
   buttonDisabled: {
     opacity: 0.5,

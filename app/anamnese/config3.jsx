@@ -2,32 +2,33 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-  Alert,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
+    Alert,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import styles from "./configPerfilStyles";
 
-export default function Config4() {
-  const [dificuldadesEmocionais, setDificuldadesEmocionais] = useState(null);
-  const [dificuldadesEmocionaisDetalhes, setDificuldadesEmocionaisDetalhes] =
+export default function Config3() {
+  const [contraceptivo, setContraceptivo] = useState("");
+  const [contraceptivoDetalhes, setContraceptivoDetalhes] = useState("");
+  const [cicloMenstrual, setCicloMenstrual] = useState("");
+  const [sintomaTPM, setSintomaTPM] = useState(null);
+  const [sintomaTPMDetalhes, setSintomaTPMDetalhes] = useState("");
+  const [disfuncAssoalhoPelvi, setDisfuncAssoalhoPelvi] = useState(null);
+  const [disfuncAssoalhoPelviDetalhes, setDisfuncAssoalhoPelviDetalhes] =
     useState("");
-  const [acompanhamentoPsico, setAcompachamentoPsico] = useState(null);
-  const [tempoAcompanhamento, setTempoAcompanhamento] = useState("");
-  const [possuiDisturbio, setPossuiDisturbio] = useState(null);
-  const [qualDisturbio, setQualDisturbio] = useState("");
 
   const canContinue = Boolean(
-    dificuldadesEmocionais &&
-    acompanhamentoPsico &&
-    possuiDisturbio &&
-    (dificuldadesEmocionais === "Não" ||
-      dificuldadesEmocionaisDetalhes.trim()) &&
-    (acompanhamentoPsico === "Não" || tempoAcompanhamento.trim()) &&
-    (possuiDisturbio === "Não" || qualDisturbio.trim()),
+    contraceptivo &&
+    cicloMenstrual &&
+    sintomaTPM &&
+    disfuncAssoalhoPelvi &&
+    (contraceptivo === "Não" || contraceptivoDetalhes.trim()) &&
+    (sintomaTPM === "Não" || sintomaTPMDetalhes.trim()) &&
+    (disfuncAssoalhoPelvi === "Não" || disfuncAssoalhoPelviDetalhes.trim()),
   );
 
   return (
@@ -41,114 +42,139 @@ export default function Config4() {
           <View style={styles.etapasPreenchido} />
           <View style={styles.etapasPreenchido} />
           <View style={styles.etapasPreenchido} />
-          <View style={styles.etapasPreenchido} />
+          <View style={styles.etapasVazio} />
           <View style={styles.etapasVazio} />
           <View style={styles.etapasVazio} />
           <View style={styles.etapasVazio} />
         </View>
-        <Text style={styles.titulo}>Avaliação psicológica</Text>
+        <Text style={styles.titulo}>Saúde e Bem-estar da Mulher</Text>
         <View style={styles.formGrid}>
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>
-              Enfrenta dificuldades emocionais ou psicológicas?
+              Utiliza algum contraceptivo?
             </Text>
             <View style={styles.containerSelecao}>
               <TouchableOpacity
                 style={[
                   styles.opcaoSelecao,
-                  dificuldadesEmocionais === "Sim" && styles.opcaoSelecionada,
+                  contraceptivo === "Sim" && styles.opcaoSelecionada,
                 ]}
-                onPress={() => setDificuldadesEmocionais("Sim")}
+                onPress={() => setContraceptivo("Sim")}
               >
                 <Text style={styles.textoSelecao}>Sim</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
                   styles.opcaoSelecao,
-                  dificuldadesEmocionais === "Não" && styles.opcaoSelecionada,
+                  contraceptivo === "Não" && styles.opcaoSelecionada,
                 ]}
-                onPress={() => setDificuldadesEmocionais("Não")}
+                onPress={() => setContraceptivo("Não")}
               >
                 <Text style={styles.textoSelecao}>Não</Text>
               </TouchableOpacity>
             </View>
-            {dificuldadesEmocionais === "Sim" && (
+            {contraceptivo === "Sim" && (
               <View style={styles.opcaoInputContainer}>
                 <TextInput
                   style={styles.opcaoInput}
-                  placeholder="Descreva:"
-                  value={dificuldadesEmocionaisDetalhes}
-                  onChangeText={setDificuldadesEmocionaisDetalhes}
+                  placeholder="Quais contraceptivos?"
+                  value={contraceptivoDetalhes}
+                  onChangeText={setContraceptivoDetalhes}
                 />
               </View>
             )}
           </View>
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>
-              Realiza algum acompanhamento psicológico?
+              Como é o seu ciclo menstrual?
             </Text>
             <View style={styles.containerSelecao}>
               <TouchableOpacity
                 style={[
                   styles.opcaoSelecao,
-                  acompanhamentoPsico === "Sim" && styles.opcaoSelecionada,
+                  cicloMenstrual === "Regular" && styles.opcaoSelecionada,
                 ]}
-                onPress={() => setAcompachamentoPsico("Sim")}
+                onPress={() => setCicloMenstrual("Regular")}
+              >
+                <Text style={styles.textoSelecao}>Regular</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[
+                  styles.opcaoSelecao,
+                  cicloMenstrual === "Irregular" && styles.opcaoSelecionada,
+                ]}
+                onPress={() => setCicloMenstrual("Irregular")}
+              >
+                <Text style={styles.textoSelecao}>Irregular</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.containersSelecao}>
+            <Text style={styles.textoSelecao}>
+              Possui sintomas relacionados à TPM?
+            </Text>
+            <View style={styles.containerSelecao}>
+              <TouchableOpacity
+                style={[
+                  styles.opcaoSelecao,
+                  sintomaTPM === "Sim" && styles.opcaoSelecionada,
+                ]}
+                onPress={() => setSintomaTPM("Sim")}
               >
                 <Text style={styles.textoSelecao}>Sim</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
                   styles.opcaoSelecao,
-                  acompanhamentoPsico === "Não" && styles.opcaoSelecionada,
+                  sintomaTPM === "Não" && styles.opcaoSelecionada,
                 ]}
-                onPress={() => setAcompachamentoPsico("Não")}
+                onPress={() => setSintomaTPM("Não")}
               >
                 <Text style={styles.textoSelecao}>Não</Text>
               </TouchableOpacity>
             </View>
-            {acompanhamentoPsico === "Sim" && (
+            {sintomaTPM === "Sim" && (
               <View style={styles.opcaoInputContainer}>
                 <TextInput
                   style={styles.opcaoInput}
-                  placeholder="Há quanto tempo?"
-                  value={tempoAcompanhamento}
-                  onChangeText={setTempoAcompanhamento}
+                  placeholder="Quais sintomas?"
+                  value={sintomaTPMDetalhes}
+                  onChangeText={setSintomaTPMDetalhes}
                 />
               </View>
             )}
           </View>
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>
-              Possui algum transtorno emocional ou comportamental?
+              Possui disfunções do assoalho pélvico?
             </Text>
             <View style={styles.containerSelecao}>
               <TouchableOpacity
                 style={[
                   styles.opcaoSelecao,
-                  possuiDisturbio === "Sim" && styles.opcaoSelecionada,
+                  disfuncAssoalhoPelvi === "Sim" && styles.opcaoSelecionada,
                 ]}
-                onPress={() => setPossuiDisturbio("Sim")}
+                onPress={() => setDisfuncAssoalhoPelvi("Sim")}
               >
                 <Text style={styles.textoSelecao}>Sim</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={[
                   styles.opcaoSelecao,
-                  possuiDisturbio === "Não" && styles.opcaoSelecionada,
+                  disfuncAssoalhoPelvi === "Não" && styles.opcaoSelecionada,
                 ]}
-                onPress={() => setPossuiDisturbio("Não")}
+                onPress={() => setDisfuncAssoalhoPelvi("Não")}
               >
                 <Text style={styles.textoSelecao}>Não</Text>
               </TouchableOpacity>
             </View>
-            {possuiDisturbio === "Sim" && (
+            {disfuncAssoalhoPelvi === "Sim" && (
               <View style={styles.opcaoInputContainer}>
                 <TextInput
                   style={styles.opcaoInput}
-                  placeholder="Qual/quais?"
-                  value={qualDisturbio}
-                  onChangeText={setQualDisturbio}
+                  placeholder="Quais disfunções?"
+                  value={disfuncAssoalhoPelviDetalhes}
+                  onChangeText={setDisfuncAssoalhoPelviDetalhes}
                 />
               </View>
             )}
@@ -170,7 +196,7 @@ export default function Config4() {
               );
               return;
             }
-            router.push("/config5");
+            router.push("./config4");
           }}
         >
           <Text style={styles.decisionsContinuar}>Continuar</Text>

@@ -11,6 +11,7 @@ export const colors = {
   scrollbar: "rgba(255,255,255,0.6)",
   frameBorder: "#000000",
   navGreen: "#3C4A34",
+  lightGreen: "#88935B",
 };
 
 export const styles = StyleSheet.create({
@@ -35,7 +36,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 20,
-    marginTop: 30,
   },
   backButton: {
     marginRight: 12,
@@ -123,6 +123,28 @@ export const styles = StyleSheet.create({
     paddingVertical: 8,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  observacaoContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
+    paddingTop: 12,
+    backgroundColor: colors.lightGreen,
+    borderWidth: 1,
+    borderColor: "rgba(0,0,0,0.08)",
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  observacaoLabel: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: colors.textDark,
+    marginBottom: 10,
+  },
+  observacaoText: {
+    fontSize: 13,
+    color: colors.textDark,
+    lineHeight: 20,
   },
 
   // Barra de navegação inferior

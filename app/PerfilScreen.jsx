@@ -1,28 +1,35 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { styles, colors } from './perfilStyles';
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
+import { useState } from "react";
+import {
+  SafeAreaView,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { colors, styles } from "./perfilStyles";
 
-// ---- Dados mockados (fáceis de substituir por props/estado/API) ----
-const screenTitle = 'Meu perfil';
+//Dados mockados
+const screenTitle = "Meu perfil";
 
 const user = {
-  name: 'Gabriela Xavier',
+  name: "Gabriela Xavier",
 };
 
 const ficha = [
-  { label: 'Peso', value: '70kg' },
-  { label: 'Altura', value: '175cm' },
-  { label: 'Nível atual', value: 'Leve' },
-  { label: 'Treino', value: '3x - 45min' },
+  { label: "Peso", value: "70kg" },
+  { label: "Altura", value: "175cm" },
+  { label: "Nível atual", value: "Leve" },
+  { label: "Treino", value: "3x - 45min" },
 ];
 
 const collapsibleOptions = [
-  { key: 'senha', label: 'Alterar senha' },
-  { key: 'notificacoes', label: 'Notificações' },
+  { key: "senha", label: "Alterar senha" },
+  { key: "notificacoes", label: "Notificações" },
 ];
 
-export default function PerfilScreen({ onBack }) {
+export default function PerfilScreen() {
   // Controla quais seções colapsáveis estão abertas (nenhuma por padrão)
   const [openSections, setOpenSections] = useState({});
 
@@ -40,7 +47,11 @@ export default function PerfilScreen({ onBack }) {
         >
           {/* Header */}
           <View style={styles.headerRow}>
-            <TouchableOpacity style={styles.backButton} onPress={onBack} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => router.push("/homeScreen")}
+              activeOpacity={0.7}
+            >
               <Ionicons name="arrow-back" size={22} color={colors.textDark} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>{screenTitle}</Text>
@@ -49,7 +60,11 @@ export default function PerfilScreen({ onBack }) {
           {/* Avatar + nome */}
           <View style={styles.profileSection}>
             <View style={styles.avatarCircle}>
-              <Ionicons name="person-outline" size={32} color={colors.textDark} />
+              <Ionicons
+                name="person-outline"
+                size={32}
+                color={colors.textDark}
+              />
             </View>
             <Text style={styles.userName}>{user.name}</Text>
           </View>
@@ -75,7 +90,7 @@ export default function PerfilScreen({ onBack }) {
             >
               <Text style={styles.collapsibleLabel}>{option.label}</Text>
               <Ionicons
-                name={openSections[option.key] ? 'chevron-up' : 'chevron-down'}
+                name={openSections[option.key] ? "chevron-up" : "chevron-down"}
                 size={18}
                 color={colors.textDark}
               />

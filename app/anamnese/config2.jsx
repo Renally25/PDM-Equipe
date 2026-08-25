@@ -358,7 +358,7 @@ export default function Config2() {
               );
               return;
             }
-            router.push("/config3");
+            router.push("./config3");
           }}
         >
           <Text style={styles.decisionsContinuar}>Continuar</Text>

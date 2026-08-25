@@ -16,8 +16,8 @@ export default function Login() {
       showsVerticalScrollIndicator={true}
     >
       <Image
-        source={require("../assets/images/Logo raggio-bege.png")}
-        style={{ height: 200, width: 200 }}
+        source={require("../assets/images/Logo Raggio.png")}
+        style={{ height: 200, width: 200, borderRadius: 100}}
       />
       <Text style={styles.titulo}>Entrar</Text>
       <Text style={styles.subtitle}>Use os dados enviados pela academia</Text>

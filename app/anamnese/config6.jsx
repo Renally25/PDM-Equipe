@@ -79,7 +79,7 @@ export default function Config6() {
               return;
             }
             router.push(
-              `/configTermo?objetivos=${encodeURIComponent(objetivos ?? "")}&expectativas=${encodeURIComponent(
+              `./configTermo?objetivos=${encodeURIComponent(objetivos ?? "")}&expectativas=${encodeURIComponent(
                 expectativas ?? "",
               )}`,
             );

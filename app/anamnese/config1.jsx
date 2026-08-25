@@ -80,7 +80,7 @@ export default function Config1() {
               );
               return;
             }
-            router.push("/config2");
+            router.push("./config2");
           }}
         >
           <Text style={styles.decisionsContinuar}>Continuar</Text>

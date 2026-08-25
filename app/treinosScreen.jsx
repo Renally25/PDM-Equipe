@@ -2,11 +2,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useState } from "react";
 import {
-  SafeAreaView,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  View,
+    SafeAreaView,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { colors, styles } from "./treinosStyles";
 
@@ -73,7 +73,6 @@ const diasTreino = [
 
 export default function TreinosScreen() {
   const [chaveAberta, setChaveAberta] = useState(null);
-  const onBack = () => router.back();
 
   const alternarExpansao = (key) => {
     setChaveAberta((prev) => (prev === key ? null : key));
@@ -91,7 +90,7 @@ export default function TreinosScreen() {
           <View style={styles.headerRow}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={onBack}
+              onPress={() => router.push("/homeScreen")}
               activeOpacity={0.7}
             >
               <Ionicons name="arrow-back" size={22} color={colors.textDark} />
