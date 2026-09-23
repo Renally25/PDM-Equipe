@@ -1,5 +1,5 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
   Alert,
@@ -11,11 +11,50 @@ import {
 } from "react-native";
 import styles from "./configPerfilStyles";
 
-export default function Config6() {
-  const [objetivos, setObjetivos] = useState(null);
-  const [expectativas, setExpectativas] = useState(null);
+const apiUrl =
+  process.env.EXPO_PUBLIC_AUTH_API ||
+  process.env.NEXT_PUBLIC_AUTH_API;
 
-  const canContinue = objetivos?.trim() && expectativas?.trim();
+export default function Config6() {
+  const { codusuario } = useLocalSearchParams();
+
+  const [objetivos, setObjetivos] = useState("");
+  const [expectativas, setExpectativas] = useState("");
+
+  const codigoUsuario = Array.isArray(codusuario)
+    ? codusuario[0]
+    : codusuario;
+
+  const canContinue =
+    objetivos.trim().length > 0 &&
+    expectativas.trim().length > 0;
+
+  const handleContinuar = () => {
+    if (!canContinue) {
+      Alert.alert(
+        "Faltam dados",
+        "Preencha os objetivos e as expectativas para continuar."
+      );
+      return;
+    }
+
+    if (!codigoUsuario) {
+      Alert.alert(
+        "Erro",
+        "Código do usuário não encontrado. Volte ao início do cadastro."
+      );
+      return;
+    }
+
+    router.push({
+      pathname: "./configTermo",
+      params: {
+        codusuario: String(codigoUsuario),
+        objetivos: objetivos.trim(),
+        expectativas: expectativas.trim(),
+      },
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -33,28 +72,40 @@ export default function Config6() {
           <View style={styles.etapasPreenchido} />
           <View style={styles.etapasVazio} />
         </View>
-        <Text style={styles.titulo}>Objetivos e expectativas</Text>
+
+        <Text style={styles.titulo}>
+          Objetivos e expectativas
+        </Text>
+
         <View style={styles.formGrid}>
           <View style={styles.containersSelecao}>
-            <Text style={styles.textoSelecao}>Objetivos com a musculação</Text>
+            <Text style={styles.textoSelecao}>
+              Objetivos com a musculação
+            </Text>
+
             <View style={styles.opcaoInputContainer}>
               <TextInput
                 style={styles.opcaoInput}
                 placeholder="Quais são seus objetivos?"
-                value={objetivos}
+                value={objetivos ?? ""}
                 onChangeText={setObjetivos}
               />
             </View>
           </View>
+
           <View style={styles.containersSelecao}>
             <Text style={styles.textoSelecao}>
               Expectativas com a musculação
             </Text>
+
             <View style={styles.opcaoInputContainer}>
               <TextInput
-                style={[styles.opcaoInput, styles.opcaoInputMultiline]}
+                style={[
+                  styles.opcaoInput,
+                  styles.opcaoInputMultiline,
+                ]}
                 placeholder="Quais são suas expectativas com a musculação?"
-                value={expectativas}
+                value={expectativas ?? ""}
                 onChangeText={setExpectativas}
                 multiline
                 numberOfLines={3}
@@ -64,37 +115,40 @@ export default function Config6() {
           </View>
         </View>
       </ScrollView>
+
       <View style={styles.decisions}>
         <TouchableOpacity
           style={[
             styles.buttonContinuar,
             !canContinue && styles.buttonDisabled,
           ]}
-          onPress={() => {
-            if (!canContinue) {
-              Alert.alert(
-                "Faltam dados",
-                "Preencha os objetivos e as expectativas para continuar.",
-              );
-              return;
-            }
-            router.push(
-              `./configTermo?objetivos=${encodeURIComponent(objetivos ?? "")}&expectativas=${encodeURIComponent(
-                expectativas ?? "",
-              )}`,
-            );
-          }}
+          onPress={handleContinuar}
           disabled={!canContinue}
         >
-          <Text style={styles.decisionsContinuar}>Continuar</Text>
-          <AntDesign name="arrow-right" size={20} color="white" />
+          <Text style={styles.decisionsContinuar}>
+            Continuar
+          </Text>
+
+          <AntDesign
+            name="arrow-right"
+            size={20}
+            color="white"
+          />
         </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.buttonVoltar}
           onPress={() => router.back()}
         >
-          <AntDesign name="arrow-left" size={20} color="#3B4231" />
-          <Text style={styles.decisionsVoltar}>Voltar</Text>
+          <AntDesign
+            name="arrow-left"
+            size={20}
+            color="#3B4231"
+          />
+
+          <Text style={styles.decisionsVoltar}>
+            Voltar
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

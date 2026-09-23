@@ -1,6 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
     SafeAreaView,
     ScrollView,
     Text,
@@ -8,44 +10,77 @@ import {
     View
 } from "react-native";
 import { colors, styles } from "./fisioStyles";
+import { obterSessao } from "../utils/session";
 
 const tituloTela = "Fisioterapia";
 
-const diasTreino = [
-  //informações substituíveis
-  {
-    key: "seg",
-    day: "Seg",
-    group: "Mobilidade de Ombro",
-    exercises: ["3 séries - 12 repetições"],
-  },
-  {
-    key: "ter",
-    day: "Ter",
-    group: "Fortalecimento lombar",
-    exercises: ["2 séries - 3 repetições"],
-  },
-  {
-    key: "qua",
-    day: "Qua",
-    group: "Alongamento cadeia posterior",
-    exercises: ["20 min - guiado"],
-  },
-  {
-    key: "qui",
-    day: "Qui",
-    group: "Amplitude de movimento",
-    exercises: ["3 séries - 15 repetições"],
-  },
-  {
-    key: "sex",
-    day: "Sex",
-    group: "Treinamento aeróbio",
-    exercises: ["Bicicleta ergométrica - 15 min"],
-  },
-];
+const apiUrl =
+  process.env.EXPO_PUBLIC_AUTH_API || process.env.NEXT_PUBLIC_AUTH_API;
 
-export default function fisioScreen() {
+export default function FisioScreen() {
+  const [protocolos, setProtocolos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function carregarProtocolos() {
+      if (!apiUrl) {
+        setError("Configure EXPO_PUBLIC_AUTH_API para carregar os protocolos.");
+        setLoading(false);
+        return;
+      }
+
+      const sessao = obterSessao();
+      const codusuario = sessao?.usuario?.codusuario;
+
+      if (!codusuario) {
+        setError("Usuário não autenticado.");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const respostaProtocolos = await fetch(
+          `${apiUrl}/api/Protocolo?codusuario=${codusuario}`,
+        );
+        if (!respostaProtocolos.ok) {
+          throw new Error("Erro ao buscar protocolos");
+        }
+
+        const protocolos = await respostaProtocolos.json();
+        const protocolosComExercicios = await Promise.all(
+          protocolos.map(async (protocolo) => {
+            const respostaExercicios = await fetch(
+              `${apiUrl}/api/Exercicio?codprotocolo=${protocolo.codprotocolo}`,
+            );
+            if (!respostaExercicios.ok) {
+              throw new Error("Erro ao buscar exercícios");
+            }
+
+            const exercicios = await respostaExercicios.json();
+            return {
+              key: String(protocolo.codprotocolo),
+              code: protocolo.codprotocolo,
+              description: protocolo.descricao || "Protocolo de fisioterapia",
+              exercises: exercicios.map((exercicio) =>
+                `${exercicio.nome}: ${exercicio.series || 0} séries - ${exercicio.repeticoes || 0} repetições`,
+              ),
+            };
+          }),
+        );
+
+        setProtocolos(protocolosComExercicios);
+      } catch (requestError) {
+        console.error(requestError);
+        setError("Não foi possível carregar os protocolos.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregarProtocolos();
+  }, []);
+
   return (
     <View style={styles.frame}>
       <SafeAreaView style={styles.safeArea}>
@@ -66,12 +101,14 @@ export default function fisioScreen() {
             <Text style={styles.headerTitle}>{tituloTela}</Text>
           </View>
 
-          {/* Lista de dias*/}
-          {diasTreino.map((item) => (
+          {loading && <ActivityIndicator size="large" color={colors.textDark} />}
+          {!!error && <Text style={styles.observacaoText}>{error}</Text>}
+
+          {!loading && !error && protocolos.map((item) => (
             <View key={item.key} style={styles.card}>
               <View style={styles.cardHeader}>
                 <Text style={styles.cardTitle}>
-                  {item.day} - {item.group}
+                  Protocolo {item.code} - {item.description}
                 </Text>
               </View>
 
@@ -96,6 +133,10 @@ export default function fisioScreen() {
               </View>
             </View>
           ))}
+
+          {!loading && !error && protocolos.length === 0 && (
+            <Text style={styles.observacaoText}>Nenhum protocolo encontrado.</Text>
+          )}
 
           <View style={styles.observacaoContainer}>
             <Text style={styles.observacaoLabel}>Observação</Text>

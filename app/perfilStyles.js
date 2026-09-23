@@ -14,15 +14,11 @@ export const colors = {
 export const styles = StyleSheet.create({
   frame: {
     flex: 1,
-    backgroundColor: colors.frameBorder,
-    borderRadius: 24,
-    padding: 6,
     overflow: 'hidden',
   },
   safeArea: {
     flex: 1,
     backgroundColor: colors.background,
-    borderRadius: 20,
     overflow: 'hidden',
   },
   scrollContent: {
