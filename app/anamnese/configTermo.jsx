@@ -1,4 +1,5 @@
 import AntDesign from "@expo/vector-icons/AntDesign";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import {
@@ -11,7 +12,7 @@ import {
 import styles from "./configPerfilStyles";
 
 export default function ConfigTermo() {
-  const { codusuario, objetivos, expectativas } = useLocalSearchParams();
+  const { codusuario } = useLocalSearchParams();
 
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [enviando, setEnviando] = useState(false);
@@ -19,14 +20,6 @@ export default function ConfigTermo() {
   const codigoUsuario = Array.isArray(codusuario)
     ? codusuario[0]
     : codusuario;
-
-  const objetivoUsuario = Array.isArray(objetivos)
-    ? objetivos[0]
-    : objetivos;
-
-  const expectativaUsuario = Array.isArray(expectativas)
-    ? expectativas[0]
-    : expectativas;
 
   const apiUrl =
     process.env.EXPO_PUBLIC_AUTH_API ||
@@ -36,7 +29,7 @@ export default function ConfigTermo() {
     if (!isConfirmed) {
       Alert.alert(
         "Confirmação necessária",
-        "Marque a autorização para continuar.",
+        "Marque a autorização para continuar."
       );
       return;
     }
@@ -44,15 +37,7 @@ export default function ConfigTermo() {
     if (!codigoUsuario) {
       Alert.alert(
         "Erro",
-        "Código do usuário não encontrado.",
-      );
-      return;
-    }
-
-    if (!objetivoUsuario?.trim() || !expectativaUsuario?.trim()) {
-      Alert.alert(
-        "Erro",
-        "Os objetivos e as expectativas não foram encontrados.",
+        "Código do usuário não encontrado."
       );
       return;
     }
@@ -60,7 +45,7 @@ export default function ConfigTermo() {
     if (!apiUrl) {
       Alert.alert(
         "Erro",
-        "URL da API não configurada.",
+        "URL da API não configurada."
       );
       return;
     }
@@ -68,33 +53,64 @@ export default function ConfigTermo() {
     try {
       setEnviando(true);
 
+      const chave = `anamnese_${codigoUsuario}`;
+
+      const dadosExistentes = await AsyncStorage.getItem(chave);
+
+      if (!dadosExistentes) {
+        throw new Error(
+          "Nenhum dado da anamnese foi encontrado."
+        );
+      }
+
+      const anamnese = JSON.parse(dadosExistentes);
+
       const dados = {
+        ...anamnese,
         codusuario: Number(codigoUsuario),
-        etapa: "motivacao",
-        expectativa: expectativaUsuario.trim(),
-        objetivo: objetivoUsuario.trim(),
-        o_que_motivou: null,
-        comprometimento: null,
         aceitou_termo_lgpd: true,
       };
 
-      const resposta = await fetch(`${apiUrl}/api/Anamnese`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dados),
-      });
+      console.log("DADOS ENVIADOS PARA API:", dados);
 
-      const resultado = await resposta.json();
+      const resposta = await fetch(
+        `${apiUrl}/api/Anamnese`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dados),
+        }
+      );
+
+      const textoResposta = await resposta.text();
+
+      let resultado = {};
+
+      try {
+        resultado = textoResposta
+          ? JSON.parse(textoResposta)
+          : {};
+      } catch {
+        resultado = {};
+      }
+
+      console.log("RESPOSTA DA API:", {
+        status: resposta.status,
+        resultado,
+      });
 
       if (!resposta.ok) {
         throw new Error(
           resultado.message ||
+            resultado.error ||
             resultado.mensagem ||
-            "Não foi possível salvar os dados.",
+            `Erro HTTP ${resposta.status}`
         );
       }
+
+      await AsyncStorage.removeItem(chave);
 
       router.push({
         pathname: "/inicio",
@@ -103,13 +119,16 @@ export default function ConfigTermo() {
         },
       });
     } catch (erro) {
-      console.error("Erro ao salvar motivação:", erro);
+      console.error(
+        "Erro ao salvar anamnese:",
+        erro
+      );
 
       Alert.alert(
         "Erro",
         erro instanceof Error
           ? erro.message
-          : "Não foi possível salvar seus dados. Tente novamente.",
+          : "Não foi possível salvar seus dados."
       );
     } finally {
       setEnviando(false);
@@ -139,20 +158,24 @@ export default function ConfigTermo() {
 
         <View style={styles.containersSelecao}>
           <Text style={styles.textoSelecao}>
-            Declaro que autorizo o uso dos meus dados pessoais, conforme a Lei
-            Geral de Proteção de dados (Lei nº 13.709/2018) para fins de
-            atendimento e acompanhamento no Raggio Studio ClinFit.
+            Declaro que autorizo o uso dos meus dados pessoais,
+            conforme a Lei Geral de Proteção de dados
+            (Lei nº 13.709/2018) para fins de atendimento e
+            acompanhamento no Raggio Studio ClinFit.
           </Text>
 
           <TouchableOpacity
             style={styles.checkboxRow}
-            onPress={() => setIsConfirmed(!isConfirmed)}
+            onPress={() =>
+              setIsConfirmed(!isConfirmed)
+            }
             disabled={enviando}
           >
             <View
               style={[
                 styles.checkbox,
-                isConfirmed && styles.checkboxChecked,
+                isConfirmed &&
+                  styles.checkboxChecked,
               ]}
             >
               {isConfirmed && (
@@ -177,13 +200,16 @@ export default function ConfigTermo() {
         <TouchableOpacity
           style={[
             styles.buttonContinuar,
-            !isConfirmed && styles.buttonDisabled,
+            !isConfirmed &&
+              styles.buttonDisabled,
           ]}
           disabled={!isConfirmed || enviando}
           onPress={handleConfirm}
         >
           <Text style={styles.decisionsContinuar}>
-            {enviando ? "Enviando..." : "Enviar e continuar"}
+            {enviando
+              ? "Enviando..."
+              : "Enviar e continuar"}
           </Text>
 
           {!enviando && (

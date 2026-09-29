@@ -3,7 +3,6 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import * as ImagePicker from "expo-image-picker";
 import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
-
 import {
   Alert,
   Image,
@@ -12,49 +11,39 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
 import styles from "./configPerfilStyles";
 
 export default function Config1() {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Obtém os parâmetros enviados pela rota anterior
   const params = useLocalSearchParams();
-
   const codusuario = params.codusuario;
 
-  // Só permite continuar quando existe uma imagem selecionada
   const canContinue = Boolean(image?.uri);
 
-  /**
-   * Abre a galeria para o usuário selecionar uma foto
-   */
   const pegarImagem = async () => {
     try {
-      // Solicita permissão para acessar a galeria
       const permissao =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (!permissao.granted) {
         Alert.alert(
           "Permissão negada",
-          "Permita o acesso à galeria para continuar."
+          "Permita o acesso à galeria para continuar.",
         );
-
         return;
       }
 
-      // Abre a galeria
-      const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ["images"],
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 0.8,
-        base64: true,
-      });
+      const result =
+        await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ["images"],
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.8,
+          base64: false,
+        });
 
-      // Usuário cancelou a seleção
       if (result.canceled) {
         return;
       }
@@ -64,164 +53,116 @@ export default function Config1() {
       if (!asset) {
         Alert.alert(
           "Erro",
-          "Não foi possível obter a imagem selecionada."
+          "Não foi possível obter a imagem selecionada.",
         );
-
-        return;
-      }
-
-      // Verifica se o base64 foi obtido
-      if (!asset.base64) {
-        Alert.alert(
-          "Erro",
-          "Não foi possível obter os dados da imagem."
-        );
-
         return;
       }
 
       console.log("Imagem selecionada:");
       console.log("URI:", asset.uri);
       console.log("Tipo:", asset.mimeType);
-      console.log(
-        "Tamanho do Base64:",
-        asset.base64.length
-      );
 
-      // Salva os dados da imagem
       setImage({
         uri: asset.uri,
-        base64: asset.base64,
         mimeType: asset.mimeType || "image/jpeg",
       });
     } catch (error) {
       console.error(
         "Erro ao selecionar imagem:",
-        error
+        error,
       );
 
       Alert.alert(
         "Erro",
-        "Não foi possível selecionar a imagem."
+        "Não foi possível selecionar a imagem.",
       );
     }
   };
 
-  /**
-   * Envia a foto para o servidor
-   */
   async function adicionarFotoPerfil() {
-    // Verifica se existe usuário
     if (!codusuario) {
       Alert.alert(
         "Erro",
-        "O código do usuário não foi informado."
+        "O código do usuário não foi informado.",
       );
-
-      console.error(
-        "codusuario não foi encontrado nos parâmetros:",
-        params
-      );
-
       return false;
     }
 
-    // Verifica se existe imagem
-    if (!image?.base64) {
+    if (!image?.uri) {
       Alert.alert(
         "Faltam dados",
-        "Adicione uma foto de perfil para continuar."
+        "Adicione uma foto de perfil para continuar.",
       );
-
       return false;
     }
 
     setLoading(true);
 
     try {
-      // Converte o código para número
       const codigoUsuario = Number(codusuario);
 
       if (Number.isNaN(codigoUsuario)) {
         Alert.alert(
           "Erro",
-          "O código do usuário é inválido."
+          "O código do usuário é inválido.",
         );
-
-        console.error(
-          "codusuario inválido:",
-          codusuario
-        );
-
         return false;
       }
 
-      // URL da API
       const url =
         `${process.env.EXPO_PUBLIC_AUTH_API}/api/Usuario`;
 
-      // Dados enviados para o backend
-      const dados = {
-        codusuario: codigoUsuario,
-        fotoperfil: image.base64,
-        fotoperfil_tipo:
-          image.mimeType || "image/jpeg",
-      };
+      const formData = new FormData();
+
+      formData.append(
+        "codusuario",
+        String(codigoUsuario),
+      );
+
+      const fotoBlob = await fetch(image.uri).then((res) => res.blob());
+
+      formData.append(
+        "foto",
+        fotoBlob,
+        "foto-perfil.jpg"
+      );
+      //formData.append("foto", {
+      //  uri: image.uri,
+      //  name: "foto-perfil.jpg",
+      //  type: image.mimeType || "image/jpeg",
+     // });
 
       console.log("--------------------------------");
       console.log("ENVIANDO FOTO DE PERFIL");
       console.log("--------------------------------");
       console.log("URL:", url);
-      console.log(
-        "codusuario:",
-        dados.codusuario
-      );
-      console.log(
-        "fotoperfil_tipo:",
-        dados.fotoperfil_tipo
-      );
-      console.log(
-        "Tamanho Base64:",
-        dados.fotoperfil.length
-      );
+      console.log("codusuario:", codigoUsuario);
+      console.log("URI:", image.uri);
+      console.log("Tipo:", image.mimeType);
       console.log("--------------------------------");
 
-      // Faz a requisição
       const response = await fetch(url, {
         method: "PUT",
-
         headers: {
-          "Content-Type": "application/json",
           Accept: "application/json",
         },
-
-        body: JSON.stringify(dados),
+        body: formData,
       });
 
-      // Lê a resposta do servidor
-      const respostaTexto =
-        await response.text();
+      const respostaTexto = await response.text();
 
       console.log("--------------------------------");
       console.log("RESPOSTA DA API");
       console.log("--------------------------------");
-      console.log(
-        "Status:",
-        response.status
-      );
-      console.log(
-        "Resposta:",
-        respostaTexto
-      );
+      console.log("Status:", response.status);
+      console.log("Resposta:", respostaTexto);
       console.log("--------------------------------");
 
-      // Se o servidor retornar erro
       if (!response.ok) {
         let mensagemErro =
           respostaTexto ||
           "Erro desconhecido no servidor.";
 
-        // Tenta interpretar como JSON
         try {
           const erroJson =
             JSON.parse(respostaTexto);
@@ -231,32 +172,29 @@ export default function Config1() {
             erroJson.error ||
             erroJson.mensagem ||
             respostaTexto;
-        } catch {
-          // A resposta não era JSON
-        }
+        } catch {}
 
         throw new Error(
-          `Erro ${response.status}: ${mensagemErro}`
+          `Erro ${response.status}: ${mensagemErro}`,
         );
       }
 
-      // Sucesso
       Alert.alert(
         "Sucesso",
-        "Foto de perfil salva com sucesso."
+        "Foto de perfil salva com sucesso.",
       );
 
       return true;
     } catch (error) {
       console.error(
         "Erro ao adicionar foto de perfil:",
-        error
+        error,
       );
 
       Alert.alert(
         "Erro",
         error?.message ||
-          "Ocorreu um erro ao salvar a foto de perfil."
+          "Ocorreu um erro ao salvar a foto de perfil.",
       );
 
       return false;
@@ -265,11 +203,7 @@ export default function Config1() {
     }
   }
 
-  /**
-   * Continua para a próxima etapa
-   */
   const handleContinuar = async () => {
-    // Evita múltiplos cliques
     if (loading) {
       return;
     }
@@ -280,7 +214,6 @@ export default function Config1() {
     if (salvoComSucesso) {
       router.push({
         pathname: "./config2",
-
         params: {
           codusuario: String(codusuario),
         },
@@ -292,15 +225,11 @@ export default function Config1() {
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={
-          styles.scrollContent
-        }
+        contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={true}
       >
-        {/* Indicador das etapas */}
         <View style={styles.etapasProcesso}>
           <View style={styles.etapasPreenchido} />
-
           <View style={styles.etapasVazio} />
           <View style={styles.etapasVazio} />
           <View style={styles.etapasVazio} />
@@ -309,12 +238,10 @@ export default function Config1() {
           <View style={styles.etapasVazio} />
         </View>
 
-        {/* Título */}
         <Text style={styles.titulo}>
           Foto de Perfil
         </Text>
 
-        {/* Seleção da foto */}
         <TouchableOpacity
           onPress={pegarImagem}
           disabled={loading}
@@ -341,13 +268,10 @@ export default function Config1() {
         </Text>
       </ScrollView>
 
-      {/* Botões */}
       <View style={styles.decisions}>
-        {/* Continuar */}
         <TouchableOpacity
           style={[
             styles.buttonContinuar,
-
             (!canContinue || loading) &&
               styles.buttonDisabled,
           ]}
@@ -355,9 +279,7 @@ export default function Config1() {
           onPress={handleContinuar}
         >
           <Text style={styles.decisionsContinuar}>
-            {loading
-              ? "Salvando..."
-              : "Continuar"}
+            {loading ? "Salvando..." : "Continuar"}
           </Text>
 
           {!loading && (
@@ -369,7 +291,6 @@ export default function Config1() {
           )}
         </TouchableOpacity>
 
-        {/* Voltar */}
         <TouchableOpacity
           style={styles.buttonVoltar}
           disabled={loading}

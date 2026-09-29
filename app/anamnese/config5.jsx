@@ -9,11 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "./configPerfilStyles";
-
-const apiUrl =
-  process.env.EXPO_PUBLIC_AUTH_API ||
-  process.env.NEXT_PUBLIC_AUTH_API;
 
 export default function Config5() {
   const { codusuario } = useLocalSearchParams();
@@ -69,7 +66,6 @@ export default function Config5() {
 
     const dados = {
       codusuario: Number(codigoUsuario),
-      etapa: "fisioterapica",
 
       tem_lesao_exercicio: sofreuLesao === "Sim",
       lesao_exercicio:
@@ -103,36 +99,21 @@ export default function Config5() {
     };
 
     try {
-      const resposta = await fetch(
-        `${apiUrl}/api/Anamnese`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(dados),
-        }
-      );
+      const chave = `anamnese_${codigoUsuario}`;
 
-      const textoResposta = await resposta.text();
+      const dadosExistentes = await AsyncStorage.getItem(chave);
 
-      let resultado = {};
+      const anamneseExistente = dadosExistentes
+        ? JSON.parse(dadosExistentes)
+        : {};
 
-      try {
-        resultado = textoResposta
-          ? JSON.parse(textoResposta)
-          : {};
-      } catch {
-        resultado = {};
-      }
+      const anamneseAtualizada = {
+        ...anamneseExistente,
+        ...dados,
+      };
 
-      if (!resposta.ok) {
-        throw new Error(
-          resultado.error ||
-            resultado.message ||
-            "Não foi possível salvar os dados da avaliação fisioterápica."
-        );
-      }
+      await AsyncStorage.setItem(chave, JSON.stringify(anamneseAtualizada));
+
 
       router.push({
         pathname: "./config6",
