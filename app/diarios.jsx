@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import {
   SafeAreaView,
@@ -10,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { colors, styles } from "./diarioStyles";
+import { obterSessao } from "../utils/session";
 
 const apiUrl =
   process.env.EXPO_PUBLIC_AUTH_API ||
@@ -20,16 +21,18 @@ const currentDate = "Quarta, 2 de abril de 2026";
 const footerNote = "Seu psicólogo\npoderá ver este registro.";
 
 export default function DiarioScreen() {
-  const { codusuario } = useLocalSearchParams();
-
-  const codigoUsuario = Array.isArray(codusuario)
-    ? codusuario[0]
-    : codusuario;
+  const sessao = obterSessao();
+  const codigoUsuario = Number(sessao?.usuario?.codusuario);
 
   const [entryText, setEntryText] = useState("");
 
   async function salvarDiario() {
     if (!entryText.trim()) {
+      return;
+    }
+
+    if (!Number.isInteger(codigoUsuario) || codigoUsuario <= 0) {
+      console.error("Não foi possível identificar o usuário.");
       return;
     }
 
@@ -52,12 +55,7 @@ export default function DiarioScreen() {
         return;
       }
 
-      router.push({
-        pathname: "/homeScreen",
-        params: {
-          codusuario: String(codigoUsuario),
-        },
-      });
+      router.push("/homeScreen");
     } catch (error) {
       console.error("Erro ao salvar diário:", error);
     }
@@ -74,14 +72,7 @@ export default function DiarioScreen() {
           <View style={styles.headerRow}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={() =>
-                router.push({
-                  pathname: "/homeScreen",
-                  params: {
-                    codusuario: String(codigoUsuario),
-                  },
-                })
-              }
+              onPress={() => router.push("/homeScreen")}
               activeOpacity={0.7}
             >
               <Ionicons
