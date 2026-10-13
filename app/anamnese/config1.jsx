@@ -58,10 +58,6 @@ export default function Config1() {
         return;
       }
 
-      console.log("Imagem selecionada:");
-      console.log("URI:", asset.uri);
-      console.log("Tipo:", asset.mimeType);
-
       setImage({
         uri: asset.uri,
         mimeType: asset.mimeType || "image/jpeg",
@@ -132,15 +128,6 @@ export default function Config1() {
       //  type: image.mimeType || "image/jpeg",
      // });
 
-      console.log("--------------------------------");
-      console.log("ENVIANDO FOTO DE PERFIL");
-      console.log("--------------------------------");
-      console.log("URL:", url);
-      console.log("codusuario:", codigoUsuario);
-      console.log("URI:", image.uri);
-      console.log("Tipo:", image.mimeType);
-      console.log("--------------------------------");
-
       const response = await fetch(url, {
         method: "PUT",
         headers: {
@@ -150,13 +137,6 @@ export default function Config1() {
       });
 
       const respostaTexto = await response.text();
-
-      console.log("--------------------------------");
-      console.log("RESPOSTA DA API");
-      console.log("--------------------------------");
-      console.log("Status:", response.status);
-      console.log("Resposta:", respostaTexto);
-      console.log("--------------------------------");
 
       if (!response.ok) {
         let mensagemErro =

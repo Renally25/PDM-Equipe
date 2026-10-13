@@ -71,8 +71,6 @@ export default function ConfigTermo() {
         aceitou_termo_lgpd: true,
       };
 
-      console.log("DADOS ENVIADOS PARA API:", dados);
-
       const resposta = await fetch(
         `${apiUrl}/api/Anamnese`,
         {
@@ -95,11 +93,6 @@ export default function ConfigTermo() {
       } catch {
         resultado = {};
       }
-
-      console.log("RESPOSTA DA API:", {
-        status: resposta.status,
-        resultado,
-      });
 
       if (!resposta.ok) {
         throw new Error(

@@ -31,25 +31,16 @@ export default function PerfilScreen() {
 
   useEffect(() => {
     async function buscarDadosFisicos() {
-      console.log("CODUSUARIO:", codigoUsuario);
-
       if (!codigoUsuario) {
-        console.log("CODUSUARIO NÃO EXISTE");
         return;
       }
 
       try {
         const url = `${apiUrl}/api/Anamnese?codusuario=${codigoUsuario}&etapa=fisicos`;
 
-        console.log("FAZENDO FETCH:", url);
-
         const resposta = await fetch(url);
 
-        console.log("STATUS:", resposta.status);
-
         const dados = await resposta.json();
-
-        console.log("DADOS RECEBIDOS:", dados);
 
         if (!resposta.ok) {
           console.error("ERRO DA API:", dados);

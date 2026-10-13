@@ -50,6 +50,7 @@ export default function HomeScreen() {
           );
         }
 
+        const agora = new Date();
         const consultasAgendadas = (Array.isArray(dados)
           ? dados
           : dados.consultas || []
@@ -60,14 +61,14 @@ export default function HomeScreen() {
           )
           .map((consulta) => ({
             consulta,
-            data: new Date(
-              `${String(consulta.dataconsulta).slice(0, 10)}T${consulta.horaconsulta}`
-            ),
+            data: new Date(`${String(
+              consulta.dataconsulta || consulta.date
+            ).slice(0, 10)}T${consulta.horaconsulta || consulta.time}`),
           }))
-          .filter(({ data }) => !Number.isNaN(data.getTime()))
+          .filter(({ data }) => data >= agora)
           .sort(
             (first, second) =>
-              second.data.getTime() - first.data.getTime()
+              first.data.getTime() - second.data.getTime()
           );
 
         setConsultaMaisRecente(
@@ -95,6 +96,12 @@ export default function HomeScreen() {
         .join("")
         .toUpperCase()
     : "";
+  const dataProximaConsulta = consultaMaisRecente
+    ? consultaMaisRecente.dataconsulta || consultaMaisRecente.date
+    : null;
+  const horarioProximaConsulta = consultaMaisRecente
+    ? consultaMaisRecente.horaconsulta || consultaMaisRecente.time
+    : null;
 
   return (
     <View style={styles.quadro}>
@@ -124,9 +131,9 @@ export default function HomeScreen() {
                 ? "Carregando..."
                 : consultaMaisRecente
                 ? `${consultaMaisRecente.profissional || "Consulta"} - ${new Date(
-                    consultaMaisRecente.dataconsulta
+                    `${String(dataProximaConsulta).slice(0, 10)}T00:00:00`
                   ).toLocaleDateString("pt-BR")} às ${String(
-                    consultaMaisRecente.horaconsulta
+                    horarioProximaConsulta
                   ).slice(0, 5)}`
                 : "Nenhuma consulta agendada"}
             </Text>

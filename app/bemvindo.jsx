@@ -20,16 +20,6 @@ export default function Bemvindo() {
   // Recupera o código do usuário
   const codusuario = params.codusuario;
 
-  console.log(
-    "PARAMETROS RECEBIDOS NA BEMVINDO:",
-    params
-  );
-
-  console.log(
-    "CODUSUARIO NA BEMVINDO:",
-    codusuario
-  );
-
   const handleContinuar = () => {
     // Verifica se o código do usuário existe
     if (!codusuario) {

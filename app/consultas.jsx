@@ -22,6 +22,7 @@ import {
   dateKey,
   eventDate,
   eventDateTime,
+  formatAppointment,
 } from "../utils/consultasUtils";
 import { obterSessao } from "../utils/session";
 import styles from "./consultasStyles";
@@ -86,6 +87,10 @@ export function Calendario() {
   const [confirmationVisible, setConfirmationVisible] =
     useState(false);
   const [saving, setSaving] = useState(false);
+  const [cancellationAppointment, setCancellationAppointment] =
+    useState(null);
+  const [cancellationError, setCancellationError] = useState("");
+  const [cancellingId, setCancellingId] = useState(null);
 
   const days = useMemo(
     () =>
@@ -98,6 +103,10 @@ export function Calendario() {
 
   const eventsByDate = useMemo(() => {
     return events.reduce((index, event) => {
+      if (event.status === "cancelada") {
+        return index;
+      }
+
       const key = eventDate(event);
 
       if (key) {
@@ -126,6 +135,7 @@ export function Calendario() {
         ({ date }) =>
           date && date >= now
       )
+      .filter(({ event }) => event.status === "agendada")
       .sort(
         (first, second) =>
           first.date - second.date
@@ -134,15 +144,7 @@ export function Calendario() {
 
   useEffect(() => {
     async function carregarConsultas() {
-      console.log("CODUSUARIO DA ROTA:", codusuario);
-      console.log(
-        "CODUSUARIO DA SESSÃO:",
-        sessao?.usuario?.codusuario
-      );
-      console.log("CODUSUARIO EM CONSULTAS:", codigoUsuario);
-
       if (!apiUrl) {
-        console.log("API URL NÃO EXISTE");
         setError(
           "Configure EXPO_PUBLIC_AUTH_API para carregar as consultas."
         );
@@ -151,7 +153,6 @@ export function Calendario() {
       }
 
       if (!codigoUsuario) {
-        console.log("CODUSUARIO NÃO EXISTE EM CONSULTAS");
         setError("Usuário não identificado.");
         setLoading(false);
         return;
@@ -160,17 +161,11 @@ export function Calendario() {
       try {
         const url = `${apiUrl}/api/Consulta?codusuario=${codigoUsuario}`;
 
-        console.log("FAZENDO FETCH DE CONSULTAS:", url);
-
         const result = await fetch(
           url
         );
 
-        console.log("STATUS DA API DE CONSULTAS:", result.status);
-
         const data = await result.json();
-
-        console.log("CONSULTAS RECEBIDAS:", data);
 
         if (!result.ok) {
           throw new Error(
@@ -252,16 +247,6 @@ export function Calendario() {
         professional.codusuario;
     }
 
-    console.log("CODUSUARIO AO AGENDAR CONSULTA:", codigoUsuario);
-    console.log("DADOS DA CONSULTA:", {
-      codusuario: Number(codigoUsuario),
-      dataconsulta: dateKey(selectedDate),
-      horaconsulta: selectedTime,
-      codtreinador,
-      codpsicologo,
-      codfisioterapeuta,
-    });
-
     try {
       const resposta = await fetch(
         `${apiUrl}/api/Consulta`,
@@ -285,9 +270,6 @@ export function Calendario() {
       );
 
       const dados = await resposta.json();
-
-      console.log("STATUS AO AGENDAR CONSULTA:", resposta.status);
-      console.log("RESPOSTA AO AGENDAR CONSULTA:", dados);
 
       if (!resposta.ok) {
         console.error(
@@ -316,6 +298,61 @@ export function Calendario() {
       );
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function confirmCancellation() {
+    if (!cancellationAppointment || cancellingId !== null) {
+      return;
+    }
+
+    const codigoConsulta =
+      cancellationAppointment.codconsulta ??
+      cancellationAppointment.id;
+
+    if (!codigoConsulta || !codigoUsuario || !apiUrl) {
+      setCancellationError(
+        "Não foi possível identificar a consulta ou o usuário."
+      );
+      return;
+    }
+
+    setCancellingId(codigoConsulta);
+    setCancellationError("");
+
+    try {
+      const resposta = await fetch(`${apiUrl}/api/Consulta`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          codconsulta: Number(codigoConsulta),
+          codusuario: Number(codigoUsuario),
+          status: "cancelada",
+        }),
+      });
+      const dados = await resposta.json();
+
+      if (!resposta.ok) {
+        throw new Error(
+          dados.error || "Não foi possível cancelar a consulta."
+        );
+      }
+
+      setEvents((currentEvents) =>
+        currentEvents.filter(
+          (event) =>
+            (event.codconsulta ?? event.id) !== codigoConsulta
+        )
+      );
+      setCancellationAppointment(null);
+    } catch (requestError) {
+      setCancellationError(
+        requestError?.message || "Não foi possível cancelar a consulta."
+      );
+    } finally {
+      setCancellingId(null);
     }
   }
 
@@ -495,10 +532,69 @@ export function Calendario() {
                   event
                 )}-${index}`}
                 event={event}
+                onCancel={() => {
+                  setCancellationError("");
+                  setCancellationAppointment(event);
+                }}
+                cancellationInProgress={cancellingId !== null}
               />
             )
           )}
         </ScrollView>
+
+        <Modal
+          visible={Boolean(cancellationAppointment)}
+          transparent
+          animationType="fade"
+          onRequestClose={() => {
+            if (cancellingId === null) {
+              setCancellationAppointment(null);
+            }
+          }}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.confirmationModal}>
+              <Text style={styles.modalTitle}>Cancelar consulta</Text>
+              <Text style={styles.modalText}>
+                Deseja cancelar {cancellationAppointment
+                  ? formatAppointment(
+                      cancellationAppointment,
+                      eventDateTime(cancellationAppointment)
+                    )
+                  : "esta consulta"}
+                ?
+              </Text>
+
+              {!!cancellationError && (
+                <Text style={styles.modalError}>
+                  {cancellationError}
+                </Text>
+              )}
+
+              <View style={styles.modalActions}>
+                <TouchableOpacity
+                  onPress={() => setCancellationAppointment(null)}
+                  style={styles.cancelButton}
+                  disabled={cancellingId !== null}
+                >
+                  <Text style={styles.cancelButtonText}>Manter</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={confirmCancellation}
+                  style={styles.confirmButton}
+                  disabled={cancellingId !== null}
+                >
+                  <Text style={styles.confirmButtonText}>
+                    {cancellingId !== null
+                      ? "Cancelando..."
+                      : "Cancelar consulta"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
 
         <Modal
           visible={confirmationVisible}

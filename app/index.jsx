@@ -6,7 +6,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
+
+import { Ionicons } from "@expo/vector-icons";
 
 import { useState } from "react";
 
@@ -23,7 +26,7 @@ export default function Login() {
   const [senha, setSenha] = useState("");
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
-
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   async function fazerLogin() {
     setErro("");
 
@@ -65,11 +68,6 @@ export default function Login() {
       // Tenta obter o JSON da API
       const dados = await resposta.json();
 
-      console.log(
-        "RESPOSTA DO LOGIN:",
-        dados
-      );
-
       // Verifica erro no login
       if (!resposta.ok) {
         throw new Error(
@@ -98,11 +96,6 @@ export default function Login() {
         dados.usuario.id ??
         dados.usuario.idusuario;
 
-      console.log(
-        "CODUSUARIO RECEBIDO NO LOGIN:",
-        codusuario
-      );
-
       // Se não encontrou o código
       if (
         codusuario === undefined ||
@@ -117,11 +110,6 @@ export default function Login() {
           "O servidor não retornou o código do usuário."
         );
       }
-
-      console.log(
-        "PRIMEIRO ACESSO:",
-        dados.usuario.primeiro_acesso
-      );
 
       // Salva a sessão
       definirSessao({
@@ -214,13 +202,27 @@ export default function Login() {
         Senha
       </Text>
 
-      <TextInput
-        placeholder="suasenha"
-        secureTextEntry
-        style={styles.inputarea}
-        value={senha}
-        onChangeText={setSenha}
-      />
+      <View style={styles.passwordContainer}>
+        <TextInput
+          placeholder="suasenha"
+          secureTextEntry={!mostrarSenha}
+          style={[styles.inputarea, styles.passwordInput]}
+          value={senha}
+          onChangeText={setSenha}
+        />
+        <TouchableOpacity
+          style={styles.eyeButton}
+          onPress={() => setMostrarSenha(!mostrarSenha)}
+          accessibilityRole="button"
+          accessibilityLabel={mostrarSenha ? "Ocultar senha" : "Mostrar senha"}
+        >
+          <Ionicons
+            name={mostrarSenha ? "eye" : "eye-off"}
+            size={24}
+            color="gray"
+          />
+        </TouchableOpacity>
+      </View>
 
       {!!erro && (
         <Text style={styles.texto}>

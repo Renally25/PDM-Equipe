@@ -17,11 +17,20 @@ export function buildMonthGrid(year, month) {
 }
 
 export function eventDateTime(event) {
-  const value = event.date || event.data || event.start;
+  const value =
+    event.date || event.dataconsulta || event.data || event.start;
   if (!value) return null;
 
-  const date = new Date(value);
-  const time = event.time || event.horario;
+  let date;
+
+  if (typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [year, month, day] = value.split("-").map(Number);
+    date = new Date(year, month - 1, day);
+  } else {
+    date = new Date(value);
+  }
+
+  const time = event.time || event.horario || event.horaconsulta;
   if (time) {
     const [hours, minutes = "00"] = String(time).split(":");
     date.setHours(Number(hours), Number(minutes), 0, 0);
@@ -40,7 +49,7 @@ export function eventTitle(event) {
 }
 
 export function eventTime(event) {
-  return event.time || event.horario;
+  return event.time || event.horario || event.horaconsulta;
 }
 
 export function formatAppointment(event, date) {

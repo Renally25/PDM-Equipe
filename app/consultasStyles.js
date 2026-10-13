@@ -225,6 +225,11 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: "700",
   },
+  modalError: {
+    color: "#A12D27",
+    fontSize: 14,
+    marginTop: 8,
+  },
   message: { color: colors.muted, fontSize: 14, paddingVertical: 14 },
   eventCard: {
     flexDirection: "row",
@@ -234,6 +239,9 @@ const styles = StyleSheet.create({
     padding: 14,
     marginBottom: 10,
   },
+  eventDetails: {
+    flex: 1,
+  },
   eventIcon: {
     backgroundColor: colors.background,
     borderRadius: 9,
@@ -242,6 +250,17 @@ const styles = StyleSheet.create({
   },
   eventTitle: { color: colors.textDark, fontSize: 15, fontWeight: "700" },
   eventTime: { color: colors.muted, fontSize: 13, marginTop: 4 },
+  eventCancelButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingLeft: 8,
+  },
+  eventCancelButtonText: {
+    color: colors.darkGreen,
+    fontSize: 13,
+    fontWeight: "700",
+  },
 });
 
 export default { ...styles, colors };

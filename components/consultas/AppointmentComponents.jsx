@@ -20,7 +20,7 @@ export function AppointmentCard({ appointment }) {
   );
 }
 
-export function EventCard({ event }) {
+export function EventCard({ event, onCancel, cancellationInProgress }) {
   const time = eventTime(event);
   return (
     <View style={styles.eventCard}>
@@ -31,10 +31,26 @@ export function EventCard({ event }) {
           color={styles.colors.darkGreen}
         />
       </View>
-      <View>
+      <View style={styles.eventDetails}>
         <Text style={styles.eventTitle}>{eventTitle(event)}</Text>
         {time && <Text style={styles.eventTime}>{time}</Text>}
       </View>
+      {event.status === "agendada" && onCancel && (
+        <TouchableOpacity
+          style={styles.eventCancelButton}
+          onPress={onCancel}
+          disabled={cancellationInProgress}
+          accessibilityRole="button"
+          accessibilityLabel="Cancelar consulta"
+        >
+          <Ionicons
+            name="close-circle-outline"
+            size={18}
+            color={styles.colors.darkGreen}
+          />
+          <Text style={styles.eventCancelButtonText}>Cancelar</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }

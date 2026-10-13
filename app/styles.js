@@ -49,6 +49,23 @@ export default StyleSheet.create({
     padding: 10,
     border: "none",
   },
+  passwordContainer: {
+    width: "80%",
+    position: "relative",
+  },
+  passwordInput: {
+    width: "100%",
+    paddingRight: 48,
+  },
+  eyeButton: {
+    position: "absolute",
+    right: 10,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 32,
+  },
   button: {
     backgroundColor: "#656C47",
     padding: 12,
