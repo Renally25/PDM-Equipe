@@ -50,13 +50,15 @@ export default function Login() {
 
     try {
       // Faz login
+      console.log(`Fazendo login para ${email.trim()}...`);
+      console.log(`${apiUrl}/api/login`);
+
       const resposta = await fetch(
         `${apiUrl}/api/login`,
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
+            "Content-Type": "application/json"
           },
           body: JSON.stringify({
             email: email.trim(),
@@ -64,6 +66,8 @@ export default function Login() {
           }),
         }
       );
+
+      console.log(`Resposta do login para ${email.trim()}:`, resposta);
 
       // Tenta obter o JSON da API
       const dados = await resposta.json();
